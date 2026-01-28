@@ -20,6 +20,14 @@
         const $ = selector => document.querySelector(selector);
         const $$ = selector => document.querySelectorAll(selector);
 
+        const debounce = (fn, delay) => {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn.apply(this, args), delay);
+            };
+        };
+
         // ==========================================
         // INITIAL STATE (Prevent FOUC)
         // ==========================================
@@ -224,6 +232,49 @@
                 ease: 'power2.out'
             });
         }
+
+        // ==========================================
+        // CLIENTS INFINITE SCROLL (GSAP)
+        // ==========================================
+        const initClientScroll = () => {
+            const row1Track = $('.row-1 .track-content');
+            const row2Track = $('.row-2 .track-content');
+
+            if (!row1Track || !row2Track) return;
+
+            // Kill any existing animations on these elements
+            gsap.killTweensOf([row1Track, row2Track]);
+
+            // Row 1 (Left to Right)
+            // Note: Since content is duplicated, we animate -50% to 0
+            gsap.to(row1Track, {
+                xPercent: -50,
+                duration: isMobile ? 20 : 35,
+                ease: 'none',
+                repeat: -1,
+                onReverseComplete: function () { this.totalTime(this.rawTime() + this.duration() * 100); }
+            });
+
+            // Row 2 (Right to Left)
+            // Start at -50% and go to 0
+            gsap.set(row2Track, { xPercent: -50 });
+            gsap.to(row2Track, {
+                xPercent: 0,
+                duration: isMobile ? 20 : 35,
+                ease: 'none',
+                repeat: -1
+            });
+        };
+
+        initClientScroll();
+
+        // Re-initialize on window resize to ensure consistent speed
+        window.addEventListener('resize', debounce(() => {
+            const newIsMobile = window.innerWidth < 768;
+            if (newIsMobile !== isMobile) {
+                location.reload(); // Simplest way to re-calc GSAP durations correctly for this type of loop
+            }
+        }, 250));
 
 
 

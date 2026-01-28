@@ -1722,40 +1722,70 @@
         function initShowcaseVideos() {
             const playButtons = document.querySelectorAll('.showcase-play-btn');
             const videos = document.querySelectorAll('.showcase-video');
+            const showcaseSection = document.querySelector('.ourwork-showcase');
+
+            // Function to stop all showcase videos
+            const stopAllVideos = () => {
+                videos.forEach(v => {
+                    v.pause();
+                    // Optional: v.currentTime = 0; // Reset if preferred
+                    const wrapper = v.closest('.showcase-device');
+                    if (wrapper) {
+                        wrapper.classList.remove('has-played', 'is-playing');
+                        v.removeAttribute('controls');
+                    }
+                });
+            };
 
             // Fix black screen by forcing first frame load
             videos.forEach(video => {
-                video.preload = "auto"; // Ensure it tries to load
-
+                video.preload = "auto";
                 const loadFrame = () => {
-                    if (video.currentTime < 0.1) {
-                        video.currentTime = 0.1;
-                    }
+                    if (video.currentTime < 0.1) video.currentTime = 0.1;
                 };
-
-                if (video.readyState >= 1) {
-                    loadFrame();
-                } else {
-                    video.addEventListener('loadedmetadata', loadFrame);
-                }
+                if (video.readyState >= 1) loadFrame();
+                else video.addEventListener('loadedmetadata', loadFrame);
             });
 
             playButtons.forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    e.stopPropagation(); // Prevent card click if any
+                    e.stopPropagation();
 
                     const wrapper = btn.closest('.showcase-device');
                     const video = wrapper.querySelector('video');
 
                     if (video) {
+                        // Pause others first
+                        videos.forEach(v => {
+                            if (v !== video) {
+                                v.pause();
+                                const w = v.closest('.showcase-device');
+                                if (w) w.classList.remove('has-played', 'is-playing');
+                            }
+                        });
+
                         video.setAttribute('controls', 'true');
                         video.play();
-                        wrapper.classList.add('has-played');
-                        wrapper.classList.add('is-playing'); // Add both for compatibility
+                        wrapper.classList.add('has-played', 'is-playing');
                     }
                 });
             });
+
+            // Stop videos when scrolling away
+            if (showcaseSection && 'IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (!entry.isIntersecting) {
+                            stopAllVideos();
+                        }
+                    });
+                }, { threshold: 0.1 });
+                observer.observe(showcaseSection);
+            }
+
+            // Expose stopAllVideos for slider use
+            window.stopShowcaseVideos = stopAllVideos;
         }
 
         // ==========================================
@@ -1774,6 +1804,8 @@
 
             const updateSlider = () => {
                 if (window.innerWidth <= 768) {
+                    // Stop videos when switching slides
+                    if (window.stopShowcaseVideos) window.stopShowcaseVideos();
                     const offset = currentIndex * -100;
                     grid.style.transform = `translateX(${offset}%)`;
                 } else {

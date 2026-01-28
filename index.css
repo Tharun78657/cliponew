@@ -6726,14 +6726,18 @@ body:has(input[value="light"]:checked) .footer__logo--dark {
 
 .track-content {
     display: flex;
-    gap: 15px;
-    padding: 10px 0;
+    gap: 0;
+    padding: 15px 0;
+    width: max-content;
+    will-change: transform;
 }
 
 .client-card {
     flex: 0 0 280px;
     height: 140px;
     padding: 24px;
+    margin-right: 20px;
+    /* Use margin instead of gap for perfect infinity logic */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -6758,41 +6762,9 @@ body:has(input[value="light"]:checked) .footer__logo--dark {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--c-light) 10%, transparent), transparent);
-    opacity: 0.5;
-    pointer-events: none;
 }
 
-/* Animations Row 1 (Left to Right) */
-.row-1 .track-content {
-    animation: scroll-left 25s linear infinite;
-}
-
-/* Animations Row 2 (Right to Left) */
-.row-2 .track-content {
-    animation: scroll-right 25s linear infinite;
-}
-
-
-@keyframes scroll-left {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(calc(-50% - 7.5px));
-    }
-}
-
-@keyframes scroll-right {
-    0% {
-        transform: translateX(calc(-50% - 7.5px));
-    }
-
-    100% {
-        transform: translateX(0);
-    }
-}
+/* Animations moved to JavaScript for absolute smoothness and device consistency */
 
 /* Hover effects removed per user request */
 /*
@@ -6908,14 +6880,16 @@ body:has(input[value="dim"]:checked) img[src*="chiguru"] {
         gap: 10px;
     }
 
+    .track-content {
+        gap: 0;
+    }
+
     .client-card {
         flex: 0 0 180px;
         height: 100px;
-    }
-
-    .row-1 .track-content,
-    .row-2 .track-content {
-        animation-duration: 15s;
+        border-radius: 20px;
+        padding: 15px;
+        margin-right: 12px;
     }
 }
 
