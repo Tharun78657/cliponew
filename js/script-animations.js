@@ -249,10 +249,9 @@
             // Note: Since content is duplicated, we animate -50% to 0
             gsap.to(row1Track, {
                 xPercent: -50,
-                duration: isMobile ? 7 : 30, // Much faster (7s) on mobile
+                duration: isMobile ? 12 : 30, // Much faster on mobile
                 ease: 'none',
                 repeat: -1,
-                force3D: true, // Force hardware acceleration for iOS
                 onReverseComplete: function () { this.totalTime(this.rawTime() + this.duration() * 100); }
             });
 
@@ -261,10 +260,9 @@
             gsap.set(row2Track, { xPercent: -50 });
             gsap.to(row2Track, {
                 xPercent: 0,
-                duration: isMobile ? 7 : 30, // Much faster (7s) on mobile
+                duration: isMobile ? 12 : 30, // Much faster on mobile
                 ease: 'none',
-                repeat: -1,
-                force3D: true // Force hardware acceleration for iOS
+                repeat: -1
             });
         };
 
