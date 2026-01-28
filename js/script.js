@@ -1758,10 +1758,60 @@
             });
         }
 
+        // ==========================================
+        // SHOWCASE MOBILE SLIDER
+        // ==========================================
+        function initShowcaseSlider() {
+            const grid = document.querySelector('.video-showcase-grid');
+            const cards = document.querySelectorAll('.video-showcase-grid .video-card');
+            const prevBtn = document.querySelector('.showcase-nav-btn.prev');
+            const nextBtn = document.querySelector('.showcase-nav-btn.next');
+
+            if (!grid || !cards.length || !prevBtn || !nextBtn) return;
+
+            let currentIndex = 0;
+            const totalCards = cards.length;
+
+            const updateSlider = () => {
+                if (window.innerWidth <= 768) {
+                    const offset = currentIndex * -100;
+                    grid.style.transform = `translateX(${offset}%)`;
+                } else {
+                    grid.style.transform = 'none';
+                }
+            };
+
+            prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentIndex = (currentIndex > 0) ? currentIndex - 1 : totalCards - 1;
+                updateSlider();
+            });
+
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                currentIndex = (currentIndex < totalCards - 1) ? currentIndex + 1 : 0;
+                updateSlider();
+            });
+
+            // Initialize position
+            updateSlider();
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    currentIndex = 0;
+                }
+                updateSlider();
+            });
+        }
+
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initShowcaseVideos);
+            document.addEventListener('DOMContentLoaded', () => {
+                initShowcaseVideos();
+                initShowcaseSlider();
+            });
         } else {
             initShowcaseVideos();
+            initShowcaseSlider();
         }
     }
 
