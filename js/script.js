@@ -16,7 +16,7 @@
     const DOM = {
         switcher: $('.switcher'),
         bubble: $('.switcher__bubble'),
-        themeToggle: $('.theme-toggle'),
+        themeToggle: $('#themePill'),
         lightRadio: $('input[name="theme"][value="light"]'),
         darkRadio: $('input[name="theme"][value="dark"]'),
         navInputs: $$('.switcher input[type="radio"]'),
@@ -40,42 +40,20 @@
     const raf = fn => requestAnimationFrame(fn);
 
     // ==========================================
-    // THEME TOGGLE
+    // THEME TOGGLE (PILL STYLE)
     // ==========================================
     if (DOM.themeToggle && DOM.lightRadio && DOM.darkRadio) {
         const handleThemeToggle = e => {
             if (e.type === 'touchend') e.preventDefault();
 
-            DOM.themeToggle.classList.remove('icon-jelly');
-            void DOM.themeToggle.offsetWidth;
-            DOM.themeToggle.classList.add('icon-jelly');
-
-            const overlay = document.createElement('div');
-            overlay.className = 'theme-transition';
-
             const isLight = DOM.lightRadio.checked;
             const nextTheme = isLight ? 'dark' : 'light';
-            overlay.style.backgroundColor = nextTheme === 'light' ? '#f5f5f7' : '#1a1a1a';
 
-            const clientX = e.clientX || (e.changedTouches?.[0]?.clientX ?? innerWidth / 2);
-            const clientY = e.clientY || (e.changedTouches?.[0]?.clientY ?? innerHeight / 2);
-
-            overlay.style.clipPath = `circle(0% at ${clientX}px ${clientY}px)`;
-            document.body.appendChild(overlay);
-            overlay.offsetHeight;
-
-            const maxRadius = Math.hypot(
-                Math.max(clientX, innerWidth - clientX),
-                Math.max(clientY, innerHeight - clientY)
-            );
-            overlay.style.clipPath = `circle(${maxRadius}px at ${clientX}px ${clientY}px)`;
-
-            setTimeout(() => {
-                const targetRadio = nextTheme === 'dark' ? DOM.darkRadio : DOM.lightRadio;
-                targetRadio.checked = true;
-                targetRadio.dispatchEvent(new Event('change'));
-                raf(() => setTimeout(() => overlay.remove(), 50));
-            }, 800);
+            // Just switch the radio button (which moves the pill knob and changes colors via CSS)
+            // No more screen-wide expansion animation
+            const targetRadio = nextTheme === 'dark' ? DOM.darkRadio : DOM.lightRadio;
+            targetRadio.checked = true;
+            targetRadio.dispatchEvent(new Event('change'));
         };
 
         DOM.themeToggle.addEventListener('click', handleThemeToggle);
@@ -518,7 +496,7 @@
     // ==========================================
     if (DOM.contactForm) {
         // Google Apps Script URL for form submission
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbyrqQX2oRTIDe6PvfkW7WgdWMJr1K6Rvnlkh3pWtLEkaTDHWYk9evtR3mHl5Mv0hh4DFA/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwfqeYXFUhQs4RHFoU4HABAFguzjoQxlkh1xkVeZkn2uAT955AkITO6bUYyuQE081Qr9w/exec';
 
         DOM.contactForm.addEventListener('submit', e => {
             e.preventDefault();

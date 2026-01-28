@@ -484,67 +484,136 @@ body:has(input[value="light"]:checked) .navbar__logo--dark {
     background-color: color-mix(in srgb, var(--c-glass) 25%, transparent);
 }
 
-/* Theme toggle icons */
-.theme-toggle {
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    pointer-events: auto;
+/* ==========================================
+   Premium Pill Theme Toggle (Neumorphic)
+   ========================================== */
+.theme-pill {
+    --pill-w: 72px;
+    --pill-h: 36px;
+    --thumb-size: 28px;
+    --track-bg: #E8E8E9;
+    --thumb-bg: #f5f5f7;
+    --c-icon: #224;
+
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
     cursor: pointer;
-}
-
-.theme-toggle:hover {
-    transform: scale(1.15);
-}
-
-.theme-toggle:active {
-    transform: scale(0.95);
-}
-
-.theme-toggle::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg, transparent 0deg, transparent 60deg, color-mix(in srgb, var(--c-light) 30%, transparent) 80deg, transparent 100deg);
-    animation: radarShine 4s linear infinite;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.theme-toggle svg {
     position: relative;
+    width: var(--pill-w);
+    height: var(--pill-h);
+    border-radius: 99px;
+    transition: all 0.3s ease;
+    margin-right: 15px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.theme-pill:hover {
+    transform: scale(1.02);
+}
+
+.theme-pill:active {
+    transform: scale(0.98);
+}
+
+.theme-pill__track {
+    position: absolute;
+    inset: 0;
+    background: var(--track-bg);
+    border-radius: 99px;
+    box-shadow:
+        inset 3px 3px 6px rgba(0, 0, 0, 0.1),
+        inset -3px -3px 6px rgba(255, 255, 255, 0.8),
+        0 1px 1px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.02);
+    transition: all 0.4s cubic-bezier(1, 0.0, 0.4, 1);
+    overflow: hidden;
+}
+
+.theme-pill__thumb {
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    translate: 0 -50%;
+    width: var(--thumb-size);
+    height: var(--thumb-size);
+    background: var(--thumb-bg);
+    border-radius: 50%;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s ease;
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.12),
+        0 1px 3px rgba(0, 0, 0, 0.08),
+        inset 1px 1px 1px rgba(255, 255, 255, 0.5);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-pill__icon {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    color: var(--c-icon);
+    transition: all 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-pill__icon--moon {
+    opacity: 0;
+    transform: scale(0) rotate(-45deg);
+}
+
+.theme-pill__track-icons {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
     z-index: 1;
+    opacity: 0.15;
+    pointer-events: none;
 }
 
-@keyframes radarShine {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
+.track-icon {
+    color: var(--c-icon);
 }
 
-.theme-toggle .icon-sun {
-    display: block;
+/* Theme states for Toggle */
+body:has(input[value="dark"]:checked) .theme-pill__thumb {
+    transform: translateX(calc(var(--pill-w) - var(--thumb-size) - 8px));
+    background: #2d2d30;
 }
 
-.theme-toggle .icon-moon {
-    display: none;
+body:has(input[value="dark"]:checked) .theme-pill__track {
+    background: #121214;
+    box-shadow:
+        inset 3px 3px 6px rgba(0, 0, 0, 0.4),
+        inset -1px -1px 2px rgba(255, 255, 255, 0.05);
 }
 
-body:has(input[value="dark"]:checked) .theme-toggle .icon-sun,
-body:has(input[value="dim"]:checked) .theme-toggle .icon-sun {
-    display: none;
+body:has(input[value="dark"]:checked) .theme-pill__icon--sun {
+    opacity: 0;
+    transform: scale(0) rotate(45deg);
 }
 
-body:has(input[value="dark"]:checked) .theme-toggle .icon-moon,
-body:has(input[value="dim"]:checked) .theme-toggle .icon-moon {
-    display: block;
+body:has(input[value="dark"]:checked) .theme-pill__icon--moon {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    color: #a5b4fc;
+}
+
+body:has(input[value="light"]:checked) .theme-pill__icon--sun {
+    color: #f59e0b;
+}
+
+/* Global transition adjustment */
+body {
+    transition: background 0.6s cubic-bezier(1, 0.0, 0.4, 1), color 0.6s cubic-bezier(1, 0.0, 0.4, 1);
 }
 
 /* ==========================================
@@ -1988,6 +2057,14 @@ body:has(input[value="dim"]:checked) .pricing .section__subtitle {
     margin-bottom: 16px;
     box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.service-icon img {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    border-radius: 0% !important;
 }
 
 .service-card:hover .service-icon {
@@ -6706,7 +6783,8 @@ body:has(input[value="light"]:checked) .footer__logo--dark {
     padding: 30px 0;
     gap: 20px;
     overflow: hidden;
-    /* Prevent horizontal scroll from tracks */
+    max-width: none !important;
+    width: 100%;
 }
 
 .clients-container {
@@ -6714,14 +6792,16 @@ body:has(input[value="light"]:checked) .footer__logo--dark {
     flex-direction: column;
     gap: 15px;
     margin-top: 10px;
+    width: 100%;
 }
 
 .clients-track {
     display: flex;
     overflow: hidden;
     white-space: nowrap;
-    width: 100vw;
-    mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+    width: 100%;
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
 }
 
 .track-content {
