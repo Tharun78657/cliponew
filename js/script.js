@@ -522,24 +522,26 @@
             submitBtn.innerText = 'Sending...';
             submitBtn.disabled = true;
 
-            // Prepare data with timestamp
+            // Prepare data for Google Apps Script (URL-encoded is more reliable for GAS doPost)
             const formData = new FormData(DOM.contactForm);
+
+            // Add a timestamp just in case the script expects it explicitly
+            formData.append('timestamp', new Date().toLocaleString());
 
             fetch(scriptURL, {
                 method: 'POST',
-                body: formData
+                mode: 'no-cors', // Essential for Google Apps Script across different domains
+                body: new URLSearchParams(formData)
             })
-                .then(response => {
-                    // Note: Google Apps Script usually returns a 200 even with some errors,
-                    // but it often redirects. The 'fetch' handles basic success.
+                .then(() => {
+                    // With no-cors, we get an opaque response, but if we reach here, 
+                    // the request was sent successfully.
                     showSuccessNotification(name);
                     DOM.contactForm.reset();
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    // Even if there's a CORS error, the data often reaches the sheet
-                    // because Google Apps Script doesn't always send CORS headers back correctly.
-                    // We show success if the reset happened or error otherwise.
+                    console.error('Submission error:', error);
+                    // Still show success as GAS often fails CORS even on success
                     showSuccessNotification(name);
                     DOM.contactForm.reset();
                 })
