@@ -496,7 +496,7 @@
     // ==========================================
     if (DOM.contactForm) {
         // Google Apps Script URL for form submission
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwfqeYXFUhQs4RHFoU4HABAFguzjoQxlkh1xkVeZkn2uAT955AkITO6bUYyuQE081Qr9w/exec';
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx3v0BE24PJAAU600sf2Mp7QPCSXSN1E9oN5P_UeFXT/dev';
 
         DOM.contactForm.addEventListener('submit', e => {
             e.preventDefault();
